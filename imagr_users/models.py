@@ -4,8 +4,8 @@ from django.db import models
 from django.db.models import Q
 
 FOLLOWING_BITS = {
-    'left': 1
-    'right': 1
+    'left': 1,
+    'right': 2
 }
 
 FOLLOWER_STATUSES = (
@@ -75,14 +75,14 @@ class ImagrUser(AbstractUser):
         This action will not remove existing relationship objects, but only
         appropriately set the follower status of existing relationships
         """
-        if other not in self.following:
+        if other not in self.following():
             return
         rel = self._relationship_with(other)
         if rel is not None:
             for slot in ['left', 'right']:
                 if getattr(rel, slot) == self:
                     bitmask = FOLLOWING_BITS[slot]
-                    rel.follower_status = rel.follower_status ^ bitmask
+                    rel.follower_status = rel.follower_status & ~bitmask
                     rel.full_clean()
                     rel.save()
                     return
@@ -167,10 +167,19 @@ class ImagrUser(AbstractUser):
 
 
 class Relationship(models.Model):
-    left = models.ForeignKey('imagr_users.ImagrUser', related_name='relationships_from')
-    right = models.ForeignKey('imagr_users.ImagrUser', related_name='relationships_to')
+    left = models.ForeignKey(
+        'imagr_users.ImagrUser',
+        related_name='relationships_from'
+    )
+    right = models.ForeignKey(
+        'imagr_users.ImagrUser',
+        related_name='relationships_to'
+    )
     follower_status = models.IntegerField(choices=FOLLOWER_STATUSES)
-    friendship = models.NullBooleanField(null=True, blank=True)
+    friendship = models.NullBooleanField(null=True, blank=True, default=None)
+
+    class Meta:
+        unique_together = ('left', 'right')
 
     def __unicode__(self):
         symbol = FOLLOWER_SYMBOLS.get(self.follower_status, ' - ')
