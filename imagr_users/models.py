@@ -3,6 +3,11 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 
+FOLLOWING_BITS = {
+    'left': 1
+    'right': 1
+}
+
 FOLLOWER_STATUSES = (
     (0, u'not following'),
     (1, u'left following right'),
@@ -44,7 +49,25 @@ class ImagrUser(AbstractUser):
 
         This action will create a relationship between self and other if it
         does not already exist
+
+        The relationship object will be validated before save and if validation
+        fails, the error will not be handled by this method. Calling code is
+        responsible for handling validation errors.
         """
+        if other not in self.following():
+            rel = self._relationship_with(other)
+            if rel is not None:
+                for slot in ['left', 'right']:
+                    if getattr(rel, slot) == self:
+                        bitmask = FOLLOWING_BITS[slot]
+                        rel.follower_status = rel.follower_status | bitmask
+                        break
+            else:
+                rel = Relationship(
+                    left=self, right=other, follower_status=1
+                )
+            rel.full_clean()
+            rel.save()
 
     def unfollow(self, other):
         """Self stops following other
@@ -52,7 +75,17 @@ class ImagrUser(AbstractUser):
         This action will not remove existing relationship objects, but only
         appropriately set the follower status of existing relationships
         """
-        raise NotImplementedError
+        if other not in self.following:
+            return
+        rel = self._relationship_with(other)
+        if rel is not None:
+            for slot in ['left', 'right']:
+                if getattr(rel, slot) == self:
+                    bitmask = FOLLOWING_BITS[slot]
+                    rel.follower_status = rel.follower_status ^ bitmask
+                    rel.full_clean()
+                    rel.save()
+                    return
 
     def request_friendship(self, other):
         """Self requests a friendship with other
@@ -67,6 +100,12 @@ class ImagrUser(AbstractUser):
         This action will create a relationship between self and other if it
         does not already exist
         """
+        if other not in self.friends():
+            rel = self._relationship_with(other)
+            if rel is not None:
+                rel.friendship = True
+            else:
+                rel = Relationship(left=self, right=other, follower_status=0, friendship=True)
         raise NotImplementedError
 
     def end_friendship(self, other):
@@ -114,6 +153,17 @@ class ImagrUser(AbstractUser):
             Q(following_left | following_right)
         )
         return following
+
+    def _relationship_with(self, other):
+        rel = None
+        try:
+            rel = Relationship.objects.get(left=self, right=other)
+        except Relationship.DoesNotExist:
+            try:
+                rel = Relationship.objects.get(left=other, right=self)
+            except Relationship.DoesNotExist:
+                pass
+        return rel
 
 
 class Relationship(models.Model):
