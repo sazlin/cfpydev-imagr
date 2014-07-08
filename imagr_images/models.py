@@ -37,6 +37,14 @@ class Photo(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     published = models.IntegerField(choices=PRIVACY_LEVELS)
 
+    def created(self):
+        #need to expose the created date on the image file
+        pass
+
+    def size(self):
+        #need to figure out how to expose size of an image
+        pass
+
     def __unicode__(self):
         return self.title
 
