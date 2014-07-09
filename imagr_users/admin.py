@@ -4,3 +4,4 @@ from models import ImagrUser, Relationship
 
 admin.site.register(ImagrUser)
 admin.site.register(Relationship)
+
