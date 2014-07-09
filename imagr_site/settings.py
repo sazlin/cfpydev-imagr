@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'imagr_users',
     'imagr_images',
+    'south',
 )
 
 MIDDLEWARE_CLASSES = (

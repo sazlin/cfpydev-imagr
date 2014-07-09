@@ -38,6 +38,7 @@ class Photo(models.Model):
     date_uploaded = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     published = models.IntegerField(choices=PRIVACY_LEVELS)
+    # size = models.PositiveIntegerField(default=0)
 
     def size(self):
         # need to figure out how to expose size of an image
