@@ -33,7 +33,6 @@ class ImagrTests(TestCase):
         expected = 'testuser/{}/{}/{}'.format(unicode(today.year), unicode(today.month), u'test.png')
         self.assertEquals(result, expected)
 
-
     def test_photo_save(self):
         test_photo = Photo.objects.get(title='test image')
         self.assertGreater(test_photo.image_size, 0)
