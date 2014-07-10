@@ -1,9 +1,13 @@
 from django.test import TestCase
 from models import Photo, Album
 from imagr_users.models import ImagrUser
+from imagr_images.models import get_file_owner_username
 from admin import PhotoAdmin, AlbumAdmin, ImageSizeListFilter
 from django.contrib.admin.sites import AdminSite
+import datetime
 # Create your tests here.
+
+
 class ImagrTests(TestCase):
 
     def setUp(self):
@@ -20,6 +24,15 @@ class ImagrTests(TestCase):
             published=1,
             )
         self.site = AdminSite()
+
+    def test_get_file_owner(self):
+        test_photo = Photo.objects.get(title='test image')
+        test_filename = '/usr/john/photos/test.png'
+        result = get_file_owner_username(test_photo, test_filename)
+        today = datetime.datetime.utcnow()
+        expected = 'testuser/{}/{}/{}'.format(unicode(today.year), unicode(today.month), u'test.png')
+        self.assertEquals(result, expected)
+
 
     def test_photo_save(self):
         test_photo = Photo.objects.get(title='test image')
