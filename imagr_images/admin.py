@@ -1,51 +1,38 @@
 from django.contrib import admin
-from django.contrib.admin import SimpleListFilter
+from django.contrib.admin import SimpleListFilter, DateFieldListFilter
 from models import Photo, Album
 
-# Register your models here.
 
+class ImageSizeListFilter(SimpleListFilter):
+    title = 'Image Size'
+    parameter_name = 'size'
 
-# class SizeFilter(SimpleListFilter):
-#     # Human-readable title which will be displayed in the
-#     # right admin sidebar just above the filter options.
-#     title = _('image size')
+    def lookups(self, request, model_admin):
+        return (
+            ('<= 1MB', '< 1MB'),
+            ('<= 10MB', '1MB < size <= 10MB'),
+            ('<= 100MB', '10MB < size <= 100MB'),
+            ('> 100MB', '> 100MB'), )
 
-#     # Parameter for the filter that will be used in the URL query.
-#     parameter_name = 'size'
-
-#     def lookups(self, request, model_admin):
-#         """
-#         Returns a list of tuples. The first element in each
-#         tuple is the coded value for the option that will
-#         appear in the URL query. The second element is the
-#         human-readable name for the option that will appear
-#         in the right sidebar.
-#         """
-#         return (
-#             ('80s', _('in the eighties')),
-#             ('90s', _('in the nineties')),
-#         )
-
-#     def queryset(self, request, queryset):
-#         """
-#         Returns the filtered queryset based on the value
-#         provided in the query string and retrievable via
-#         `self.value()`.
-#         """
-#         # Compare the requested value (either '80s' or '90s')
-#         # to decide how to filter the queryset.
-#         if self.value() == '80s':
-#             return queryset.filter(birthday__gte=date(1980, 1, 1),
-#                                     birthday__lte=date(1989, 12, 31))
-#         if self.value() == '90s':
-#             return queryset.filter(birthday__gte=date(1990, 1, 1),
-#                                     birthday__lte=date(1999, 12, 31))
+    def queryset(self, request, queryset):
+        if self.value() == '<= 1MB':
+            return queryset.filter(image_size__lte=1024 * 1024)
+        if self.value() == '<= 10MB':
+            return queryset.filter(
+                image_size__gt=1024 * 1024,
+                image_size__lte=10 * 1024 * 1024, )
+        if self.value() == '<= 100MB':
+            return queryset.filter(
+                image_size__gt=10 * 1024 * 1024,
+                image_size__lte=100 * 1024 * 1024, )
+        if self.value() == '> 100MB':
+            return queryset.filter(image_size__gt=100 * 1024 * 1024)
 
 
 class PhotoAdmin(admin.ModelAdmin):
 
-    def owner_link(self):
-        return u"<a href='../../imagr_users/imagruser/{}/'>{}</a>".format(self.owner.id, self.owner)
+    def owner_link(self, photo):
+        return u"<a href='../../imagr_users/imagruser/{}/'>{}</a>".format(photo.owner.id, photo.owner)
 
     owner_link.short_description = ''
     owner_link.allow_tags = True
@@ -58,22 +45,26 @@ class PhotoAdmin(admin.ModelAdmin):
               'owner',
               'published')
     readonly_fields = ('date_uploaded',
-                       'date_modified',)
+                               'date_modified',)
     list_display = ('title',
-                    owner_link,
+                    'owner_link',
                     'date_uploaded',
                     'date_modified',
-                    'size')
-    list_display_links = (owner_link,)
-    search_fields = ['date_uploaded']
+                    'image_size')
+    #list_display_links = (owner_link,)
+    search_fields = ['owner__username',
+                            'owner__email',
+                            'owner__first_name',
+                            'owner__last_name', ]
     # attribute_of_class must be in db, cannot be function
-    list_filter = ['size', ]
+    list_filter = (('date_uploaded', DateFieldListFilter),
+                      (ImageSizeListFilter),)
 
 
 class AlbumAdmin(admin.ModelAdmin):
 
-    def owner_link(self):
-        return u"<a href='../../imagr_users/imagruser/{}/'>{}</a>".format(self.owner.id, self.owner)
+    def owner_link(self, album):
+        return u"<a href='../../imagr_users/imagruser/{}/'>{}</a>".format(album.owner.id, album.owner)
 
     owner_link.short_description = ''
     owner_link.allow_tags = True
@@ -82,12 +73,17 @@ class AlbumAdmin(admin.ModelAdmin):
               'description',
               'photos',
               'owner',
-              'published',
+              'date_created',
+              'date_modified',
               'cover_photo')
+    readonly_fields = ('date_created', 'date_modified',)
     list_display = ('title',
-                    owner_link,
+                         'description',
+                         'owner_link',
+                         'date_created',
+                         'date_modified',
                     )
-    # list_display_links = (owner_link,)
+    list_display_links = ('date_created',)
     search_fields = ['owner__username',
                      'owner__email',
                      'owner__first_name',

@@ -38,11 +38,15 @@ class Photo(models.Model):
     date_uploaded = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     published = models.IntegerField(choices=PRIVACY_LEVELS)
-    # size = models.PositiveIntegerField(default=0)
+    image_size = models.IntegerField(default=0, editable=False)
 
-    def size(self):
-        # need to figure out how to expose size of an image
-        return self.image.size
+    # def size(self):
+    #     # need to figure out how to expose size of an image
+    #     return self.image.size
+
+    def save(self, *args, **kwargs):
+        self.image_size = self.image.size
+        super(Photo, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.title
