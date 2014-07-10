@@ -41,7 +41,6 @@ class Photo(models.Model):
     # size = models.PositiveIntegerField(default=0)
 
     def size(self):
-        # need to figure out how to expose size of an image
         return self.image.size
 
     def __unicode__(self):
@@ -61,8 +60,8 @@ class Album(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     published = models.IntegerField(choices=PRIVACY_LEVELS)
-    cover_photo = models.ManyToManyField(
-        Photo,
+    cover_photo = models.ForeignKey(
+        'Photo',
         related_name="cover_of",
         blank=True,
         null=True,
