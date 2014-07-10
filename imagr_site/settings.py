@@ -84,3 +84,13 @@ class Prod(Base):
     TEMPLATE_DEBUG = False
 
     SECRET_KEY = values.SecretValue(environ_name='SECRET_KEY')
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': values.SecretValue(enivron_name='IMAGR_DB_NAME'),
+            'USER': values.SecretValue(environ_name='IMAGR_DB_USER'),
+            'PASSWORD': values.SecretValue(environ_name='IMAGR_DB_PASSWORD'),
+            'HOST': values.SecretValue(environ_name='IMAGR_DB_HOST')
+        }
+    }

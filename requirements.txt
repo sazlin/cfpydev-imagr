@@ -2,4 +2,5 @@ Django==1.6
 Pillow==2.5.0
 South==1.0
 django-configurations==0.8
+psycopg2==2.5.3
 wsgiref==0.1.2
