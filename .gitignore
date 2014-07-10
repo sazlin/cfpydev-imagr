@@ -57,3 +57,4 @@ docs/_build/
 *.sqlite3
 
 media/
+.DS_Store
