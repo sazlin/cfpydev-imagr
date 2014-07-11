@@ -56,7 +56,7 @@ def user_login(request):
 
 
 def home_page(request):
-    return HttpResponse("This is the home_page.")
+    return render_to_response("home.html")
 
 """
 A "front page" that shows anonymous users something nice to encourage them to sign up (don't worry that we lack a means for them to sign up yet.  We'll add that soon).
