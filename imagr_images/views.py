@@ -56,6 +56,9 @@ def user_login(request):
 
 
 def home_page(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('user_login'))
+
     return render_to_response("home.html")
 
 """
