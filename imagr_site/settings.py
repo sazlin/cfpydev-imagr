@@ -30,6 +30,8 @@ class Base(Configuration):
 
     MEDIA_ROOT = BASE_DIR + "/media/"
 
+    MEDIA_URL = '/media/'
+
     ALLOWED_HOSTS = []
 
     AUTH_USER_MODEL = 'imagr_users.ImagrUser'
@@ -67,7 +69,6 @@ class Dev(Base):
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = values.BooleanValue(True)
     TEMPLATE_DEBUG = values.BooleanValue(True)
-    MEDIA_URL = 'http://localhost:8000/media/'
     SECRET_KEY = 'thisisecret'
 
     DATABASES = {

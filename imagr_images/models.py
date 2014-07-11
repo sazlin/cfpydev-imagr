@@ -19,7 +19,8 @@ def get_file_owner_username(instance, filename):
     parts.extend(map(unicode, [today.year, today.month]))
     parts.append(os.path.basename(filename))
     path = u"/".join(parts)
-    return path
+    print "Print upload_to: ", path
+    return
 
 
 class Photo(models.Model):
@@ -30,6 +31,7 @@ class Photo(models.Model):
         height_field='height',
         width_field='width',
     )
+
     title = models.CharField(max_length=128)
     description = models.TextField(blank=True)
     height = models.PositiveSmallIntegerField(default=0, editable=False)

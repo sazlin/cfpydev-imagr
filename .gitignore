@@ -58,3 +58,7 @@ docs/_build/
 
 media/
 .DS_Store
+static/
+admin/
+js/
+css/
