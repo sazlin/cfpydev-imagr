@@ -8,6 +8,8 @@ urlpatterns = patterns(
     '',
     url(r'^$', views.index, name='index'),
     url(r'^home/',views.home_page, name='home_page'),
+    url(r'^album/',views.album_page, name='album_page'),
+    url(r'^photo/',views.photo_page, name='photo_page'),
     url(r'^login/$', views.user_login, name='user_login'),
     # url(r'^media/' settings.MEDIA_ROOT)
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

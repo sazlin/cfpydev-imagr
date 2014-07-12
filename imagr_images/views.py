@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect, render_to_response
+from django.shortcuts import render, HttpResponseRedirect, render_to_response, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
@@ -68,6 +68,32 @@ def home_page(request):
                             {'albums': users_albums,
                              'ALBUM_URL': settings.ALBUM_URL},
                             context_instance=RequestContext(request))
+
+def album_page(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('user_login'))
+
+    album_id = request.GET['id']
+    album = get_object_or_404(Album, pk=album_id)
+
+    return render_to_response(
+                        'album.html',
+                        {'photos': album.photos,
+                         'PHOTO_URL': settings.PHOTO_URL},
+                        context_instance=RequestContext(request))
+
+def photo_page(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('user_login'))
+
+    photo_id = request.GET['id']
+    photo = get_object_or_404(Photo, pk=photo_id)
+
+    return render_to_response(
+                        'photo.html',
+                        {'photo': photo},
+                        context_instance=RequestContext(request))
+
 
 """
 A "front page" that shows anonymous users something nice to encourage them to sign up (don't worry that we lack a means for them to sign up yet.  We'll add that soon).

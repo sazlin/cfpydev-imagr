@@ -6,7 +6,7 @@
 <div class="col-xs-3 col-md-3">
 
 {% for album in albums %}
-<a href="{{ ALBUM_URL }}{{album.id}}" class="thumbnail">
+<a href="{{ ALBUM_URL }}?id={{ album.id }}" class="thumbnail">
     <h4> {{ album.title }}</h4>
     <img src="{{ MEDIA_URL }}{{ album.cover_photo.image }}" alt="{{ album.cover_photo.title }}"/>
 </a>

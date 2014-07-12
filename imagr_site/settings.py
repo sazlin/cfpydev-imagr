@@ -30,6 +30,7 @@ class Base(Configuration):
 
     MEDIA_ROOT = BASE_DIR + "/media/"
 
+    PHOTO_URL = '/photo/'
     ALBUM_URL = '/album/'
     MEDIA_URL = '/media/'
 
