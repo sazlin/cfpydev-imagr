@@ -75,15 +75,17 @@ class AlbumAdmin(admin.ModelAdmin):
               'owner',
               'date_created',
               'date_modified',
-              'cover_photo')
+              'cover_photo',
+              'published')
     readonly_fields = ('date_created', 'date_modified',)
     list_display = ('title',
                          'description',
                          'owner_link',
                          'date_created',
                          'date_modified',
+                         'published',
                     )
-    list_display_links = ('date_created',)
+    list_display_links = ('title', 'date_created',)
     search_fields = ['owner__username',
                      'owner__email',
                      'owner__first_name',

@@ -4,7 +4,8 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
-
+from imagr_images.models import Album, Photo
+from imagr_site import settings
 
 def index(request):
     if request.user.is_authenticated():
@@ -59,7 +60,14 @@ def home_page(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('user_login'))
 
-    return render_to_response("home.html")
+    users_albums = Album.objects.all().filter(owner=request.user)
+
+
+    return render_to_response(
+                            'home.html',
+                            {'albums': users_albums,
+                             'ALBUM_URL': settings.ALBUM_URL},
+                            context_instance=RequestContext(request))
 
 """
 A "front page" that shows anonymous users something nice to encourage them to sign up (don't worry that we lack a means for them to sign up yet.  We'll add that soon).

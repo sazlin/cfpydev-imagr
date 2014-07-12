@@ -30,6 +30,7 @@ class Base(Configuration):
 
     MEDIA_ROOT = BASE_DIR + "/media/"
 
+    ALBUM_URL = '/album/'
     MEDIA_URL = '/media/'
 
     ALLOWED_HOSTS = []
