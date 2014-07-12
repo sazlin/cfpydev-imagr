@@ -1,11 +1,11 @@
-from django.shortcuts import render, HttpResponseRedirect, render_to_response, get_object_or_404
-from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import HttpResponseRedirect, render_to_response, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from imagr_images.models import Album, Photo
 from imagr_site import settings
+
 
 def index(request):
     if request.user.is_authenticated():
@@ -62,12 +62,12 @@ def home_page(request):
 
     users_albums = Album.objects.all().filter(owner=request.user)
 
-
     return render_to_response(
                             'home.html',
                             {'albums': users_albums,
                              'ALBUM_URL': settings.ALBUM_URL},
                             context_instance=RequestContext(request))
+
 
 def album_page(request):
     if not request.user.is_authenticated():
@@ -83,6 +83,7 @@ def album_page(request):
                          'ALBUM_TITLE': album.title},
                         context_instance=RequestContext(request))
 
+
 def photo_page(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('user_login'))
@@ -95,6 +96,14 @@ def photo_page(request):
                         {'photo': photo},
                         context_instance=RequestContext(request))
 
+def stream_page(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('user_login'))
+    ordered_photos = Photo.objects.all().filter(owner=request.user).order_by('-date_uploaded')
+    return render_to_response(
+                        'stream.html',
+                        {'photos': ordered_photos, },
+                        context_instance=RequestContext(request))
 
 """
 A "front page" that shows anonymous users something nice to encourage them to sign up (don't worry that we lack a means for them to sign up yet.  We'll add that soon).
