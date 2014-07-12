@@ -1,13 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %} Photo: {{photo.title}} {% endblock%}
+{% block title %} Photo: {{ photo.title }} {% endblock %}
 
 {% block content %}
 <div class="col-xs-6 col-md-6">
 <a href="{{ MEDIA_URL }}{{ photo.image }}" class="thumbnail">
-    <h4> {{ photo.title }}</h4>
     <img src="{{ MEDIA_URL }}{{ photo.image }}" alt="{{ photo.title }}"/>
 </a>
+<p><strong>Description</strong>: {{ photo.description }}</p>
+<p><strong>Height</strong>: {{ photo.height }}</p>
+<p><strong>Width</strong>: {{ photo.width }}</p>
+<p><strong>Owner</strong>: {{ photo.owner }}</p>
+<p><strong>Date Uploaded</strong>: {{ photo.date_uploaded }}</p>
+<p><strong>Last Modified</strong>: {{ photo.date_modified }}</p>
+<p><strong>Visibility</strong>: {% if photo.published == 0 %}Public{% else %}Private{% endif %}</p>
+<p><strong>Image Size (bytes)</strong>: {{ photo.image_size }}</p>
 </div>
 
 {% endblock %}

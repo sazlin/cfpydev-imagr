@@ -79,7 +79,8 @@ def album_page(request):
     return render_to_response(
                         'album.html',
                         {'photos': album.photos,
-                         'PHOTO_URL': settings.PHOTO_URL},
+                         'PHOTO_URL': settings.PHOTO_URL,
+                         'ALBUM_TITLE': album.title},
                         context_instance=RequestContext(request))
 
 def photo_page(request):
