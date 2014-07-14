@@ -20,7 +20,7 @@ def get_file_owner_username(instance, filename):
     parts.append(os.path.basename(filename))
     path = u"/".join(parts)
     print "Print upload_to: ", path
-    return
+    return path
 
 
 class Photo(models.Model):

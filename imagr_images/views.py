@@ -116,7 +116,8 @@ def stream_page(request):
 
     return render_to_response(
                         'stream.html',
-                        {'photos': ordered_photos, },
+                        {'photos': ordered_photos,
+                         'PHOTO_URL': settings.PHOTO_URL, },
                         context_instance=RequestContext(request))
 
 """
