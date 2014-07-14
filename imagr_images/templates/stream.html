@@ -7,7 +7,7 @@
 
 {% for photo in photos.all %}
 <a href="{{ PHOTO_URL }}?id={{ photo.id }}" class="thumbnail">
-    <h4> {{ photo.title }}</h4>
+    <h4> {{ photo.title }} | by: {{ photo.owner }}</h4>
     <img src="{{ MEDIA_URL }}{{ photo.image }}" alt="{{ photo.title }}"/>
 </a>
 {% endfor %}

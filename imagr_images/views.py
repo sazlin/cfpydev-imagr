@@ -5,6 +5,9 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from imagr_images.models import Album, Photo
 from imagr_site import settings
+from itertools import chain
+
+from django.db.models import Q
 
 
 def index(request):
@@ -15,7 +18,7 @@ def index(request):
 
 
 def user_login(request):
-    #source: http://www.tangowithdjango.com/book/chapters/login.html
+    # source: http://www.tangowithdjango.com/book/chapters/login.html
     # Like before, obtain the context for the user's request.
     context = RequestContext(request)
 
@@ -96,10 +99,21 @@ def photo_page(request):
                         {'photo': photo},
                         context_instance=RequestContext(request))
 
+
 def stream_page(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('user_login'))
-    ordered_photos = Photo.objects.all().filter(owner=request.user).order_by('-date_uploaded')
+    # import pdb; pdb.set_trace()
+    friends = request.user.friends()
+    following = request.user.following()
+
+    filterList = list(chain(friends, following, [request.user]))
+    query = Q()
+    for user in filterList:
+        query = query | Q(owner=user)
+
+    ordered_photos = Photo.objects.all().filter(query).order_by('-date_uploaded')
+
     return render_to_response(
                         'stream.html',
                         {'photos': ordered_photos, },
