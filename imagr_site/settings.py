@@ -26,24 +26,20 @@ class Base(Configuration):
 
     USE_TZ = True
 
-    STATIC_URL = '/static/'
-
     MEDIA_ROOT = BASE_DIR + "/media/"
 
     PHOTO_URL = '/photo/'
     ALBUM_URL = '/album/'
     MEDIA_URL = '/media/'
+    STATIC_URL = '/static/'
 
-    ALLOWED_HOSTS = []
-
+    ALLOWED_HOSTS = [values.Value('didnt work', environ_name='IMAGR_HOST')]
+    STATIC_ROOT = os.path.join(BASE_DIR, "static/")
     AUTH_USER_MODEL = 'imagr_users.ImagrUser'
 
     ROOT_URLCONF = 'imagr_site.urls'
 
     WSGI_APPLICATION = 'imagr_site.wsgi.application'
-
-    # DJANGO_SECRET_KEY = values.SecretValue()
-    SECRET_KEY = values.SecretValue()
 
     MIDDLEWARE_CLASSES = (
         'django.contrib.sessions.middleware.SessionMiddleware',
@@ -66,6 +62,12 @@ class Base(Configuration):
         'south',
     )
 
+    TEMPLATE_LOADERS = (
+            ('django.template.loaders.cached.Loader', (
+            'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader', )),
+    )
+
 
 class Dev(Base):
     # SECURITY WARNING: don't run with debug turned on in production!
@@ -83,17 +85,19 @@ class Dev(Base):
 
 class Prod(Base):
     TIME_ZONE = 'UTC'
-    DEBUG = False
-    TEMPLATE_DEBUG = False
-
-    SECRET_KEY = values.SecretValue(environ_name='SECRET_KEY')
+    DEBUG = True
+    TEMPLATE_DEBUG = True
+    CSRF_COOKIE_SECURE = False  # should turn this on
+    SESSION_COOKIE_SECURE = False  # should turn this on
+    CONN_MAX_AGE = 10
+    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': values.SecretValue(enivron_name='IMAGR_DB_NAME'),
-            'USER': values.SecretValue(environ_name='IMAGR_DB_USER'),
-            'PASSWORD': values.SecretValue(environ_name='IMAGR_DB_PASSWORD'),
-            'HOST': values.SecretValue(environ_name='IMAGR_DB_HOST')
+            'NAME': os.environ.get('DJANGO_IMAGR_DB_NAME'),
+            'USER': os.environ.get('DJANGO_IMAGR_DB_USER'),
+            'PASSWORD': os.environ.get('DJANGO_IMAGR_DB_PASSWORD'),
+            'HOST': os.environ.get('DJANGO_IMAGR_DB_HOST'),
         }
     }
