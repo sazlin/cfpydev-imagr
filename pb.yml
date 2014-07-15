@@ -1,0 +1,23 @@
+
+---
+
+- hosts: imagr_web_servers
+  remote_user: ubuntu
+  tasks:
+     - name: update apt-get if needed
+       apt: update_cache=yes cache_valid_time=3600
+       sudo: yes
+       register: update
+
+     - name: pip install if needed
+       action: apt pkg=python-pip
+       sudo: yes
+       register: pip
+
+     - name: update from git
+       git: repo=https://github.com/sazlin/cfpydev-imagr.git
+            dest=~/imagr
+            version=deployment
+       register: git
+
+     - debug: var=git
