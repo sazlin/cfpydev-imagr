@@ -36,5 +36,33 @@
        pip: requirements=/home/ubuntu/imagr/requirements.txt
        register: requirements
 
-
      - debug: var=requirements
+
+     - name: set up nginx
+       apt: name=nginx state=present
+
+     - name: backup nginx config
+       shell: mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.orig
+
+     - name: copy our nginx config
+       shell: mv ./imagr/nginx.conf /etc/nginx/sites-available/default
+       notify:
+          - restart nginx
+
+  handlers:
+     - name: restart nginx
+       action: service name=nginx state=restarted
+
+
+
+
+
+
+
+
+
+
+
+
+
+
