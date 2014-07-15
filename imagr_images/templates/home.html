@@ -8,7 +8,7 @@
 {% for album in albums %}
 <a href="{{ ALBUM_URL }}?id={{ album.id }}" class="thumbnail">
     <h4> {{ album.title }}</h4>
-    <img src="{{ MEDIA_URL }}{{ album.cover_photo.image }}" alt="{{ album.cover_photo.title }}"/>
+    <img src="{{ MEDIA_ROOT }}{{ album.cover_photo.image }}" alt="{{ album.cover_photo.title }}"/>
 </a>
 {% endfor %}
 </div>

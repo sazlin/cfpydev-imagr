@@ -14,9 +14,15 @@
        action: apt pkg=python-pip
        register: pip
 
+     - name: destroy old directory
+       command: rm -rf /home/ubuntu/imagr
+       register: destroy
+
+     - debug: msg={{ destroy.stdout }}
+
      - name: update from git
-       git: repo=https://github.com/sazlin/cfpydev-imagr.git
-            dest=~/imagr
+       git: repo=http://github.com/sazlin/cfpydev-imagr.git
+            dest=/home/ubuntu/imagr
             version=deployment
        register: git
 
@@ -27,7 +33,8 @@
      - debug: msg={{ psycopg2.stdout }}
 
      - name: pip install requirements
-       pip: requirements=~/imagr/requirements.txt
+       pip: requirements=/home/ubuntu/imagr/requirements.txt
        register: requirements
+
 
      - debug: var=requirements

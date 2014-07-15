@@ -84,8 +84,8 @@ class Dev(Base):
 
 
 class Prod(Base):
-
-    MEDIA_ROOT = '/home/ubuntu/imagr/media'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = '/home/ubuntu/media'
     TIME_ZONE = 'UTC'
     DEBUG = True
     TEMPLATE_DEBUG = True
