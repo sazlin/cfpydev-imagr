@@ -3,15 +3,15 @@
 
 - hosts: imagr_web_servers
   remote_user: ubuntu
+  sudo: yes
+
   tasks:
      - name: update apt-get if needed
        apt: update_cache=yes cache_valid_time=3600
-       sudo: yes
        register: update
 
      - name: pip install if needed
        action: apt pkg=python-pip
-       sudo: yes
        register: pip
 
      - name: update from git
@@ -20,4 +20,14 @@
             version=deployment
        register: git
 
-     - debug: var=git
+     - name: install psycopg2 (because pip install doesn't work :/)
+       shell: apt-get build-dep python-psycopg2 -y
+       register: psycopg2
+
+     - debug: msg={{ psycopg2.stdout }}
+
+     - name: pip install requirements
+       pip: requirements=~/imagr/requirements.txt
+       register: requirements
+
+     - debug: var=requirements
