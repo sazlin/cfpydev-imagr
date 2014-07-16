@@ -48,8 +48,6 @@
 
      - name: copy our supervisor config
        synchronize: src=./supervisor.conf dest=/etc/supervisor/conf.d/supervisord.conf
-       notify:
-          - restart supervisor
 
      - name: set up nginx
        apt: name=nginx state=present
@@ -61,10 +59,12 @@
        shell: mv ./imagr/nginx.conf /etc/nginx/sites-available/default
        notify:
           - restart nginx
+          - restart supervisor
 
   handlers:
      - name: restart nginx
        action: service name=nginx state=restarted
+
      - name: restart supervisor
        shell: supervisord
        sudo: yes
