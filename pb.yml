@@ -32,7 +32,8 @@
        pip: requirements=/home/ubuntu/imagr/requirements.txt
        register: requirements
 
-     - debug: var=requirements
+     - name: dl and build uwsgi
+       shell: CC=gcc pip install uwsgi
 
      - django_manage: >
               command=collectstatic
@@ -45,6 +46,9 @@
      - name: install supervisor if needed
        action: apt pkg=supervisor
        register: supervisor
+
+     - name: copy our uwsgi config
+       synchronize: src=./uwsgi.ini dest=/home/ubuntu/uwsgi.ini
 
      - name: copy our supervisor config
        synchronize: src=./supervisor.conf dest=/etc/supervisor/conf.d/supervisord.conf
