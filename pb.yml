@@ -66,7 +66,8 @@
      - name: restart nginx
        action: service name=nginx state=restarted
      - name: restart supervisor
-       action: service name=supervisor state=restarted
+       shell: supervisord -c /etc/supervisord.conf
+       sudo: yes
 
 
 
