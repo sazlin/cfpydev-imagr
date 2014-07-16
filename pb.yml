@@ -46,8 +46,6 @@
        action: apt pkg=supervisor
        register: supervisor
 
-     - debug: msg={{ supervisor.stdout }}
-
      - name: copy our supervisor config
        shell: mv ./imagr/supervisor.conf /etc/supervisord.conf
        notify:
