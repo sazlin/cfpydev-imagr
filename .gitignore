@@ -62,3 +62,5 @@ static/
 admin/
 js/
 css/
+
+supervisor.conf

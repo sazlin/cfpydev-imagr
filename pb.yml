@@ -47,7 +47,7 @@
        register: supervisor
 
      - name: copy our supervisor config
-       shell: mv ./imagr/supervisor.conf /etc/supervisor/conf.d/supervisord.conf
+       synchronize: src=./supervisor.conf dest=/etc/supervisor/conf.d/supervisord.conf
        notify:
           - restart supervisor
 
