@@ -47,7 +47,7 @@
        register: supervisor
 
      - name: copy our supervisor config
-       shell: mv ./imagr/supervisor.conf /etc/supervisord.conf
+       shell: mv ./imagr/supervisor.conf /etc/supervisor/conf.d/supervisord.conf
        notify:
           - restart supervisor
 
@@ -66,7 +66,7 @@
      - name: restart nginx
        action: service name=nginx state=restarted
      - name: restart supervisor
-       shell: supervisord -c /etc/supervisord.conf
+       shell: supervisord
        sudo: yes
 
 
