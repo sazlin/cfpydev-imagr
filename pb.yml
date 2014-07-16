@@ -34,16 +34,11 @@
 
      - debug: var=requirements
 
-     - name: python manage.py collectstatic
-       django_manage: >
-            command=collectstatic
-            app_path=/home/ubuntu/imagr
+     - django_manage: >
+              command=collectstatic
+              app_path=/home/ubuntu/imagr
 
-     - name: stop all supervisor procs that may be running
-        shell: supervisorctl -c /etc/supervisor/supervisord.conf stop all
-        ignore_errors: yes
-
-    - name: kill supervisor
+     - name: kill supervisor
        shell: killall -w supervisord
        ignore_errors: yes
 
