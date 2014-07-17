@@ -11,4 +11,5 @@ urlpatterns = patterns(
 
     url(r'^', include('imagr_images.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/', include('imagr_users.urls'))
 )

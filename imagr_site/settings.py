@@ -39,7 +39,18 @@ class Base(Configuration):
 
     ROOT_URLCONF = 'imagr_site.urls'
 
+    ACCOUNT_ACTIVATION_DAYS = 1
+
     WSGI_APPLICATION = 'imagr_site.wsgi.application'
+
+    # TEMPLATE_CONTEXT_PROCESSORS = (
+    #     "django.contrib.auth.context_processors.auth",
+    #     "django.core.context_processors.debug",
+    #     "django.core.context_processors.i18n",
+    #     "django.core.context_processors.media",
+    #     "django.core.context_processors.static",
+    #     "django.core.context_processors.tz",
+    #     "django.contrib.messages.context_processors.messages")
 
     MIDDLEWARE_CLASSES = (
         'django.contrib.sessions.middleware.SessionMiddleware',
@@ -60,12 +71,13 @@ class Base(Configuration):
         'imagr_users',
         'imagr_images',
         'south',
+        'registration',
     )
 
     TEMPLATE_LOADERS = (
-            ('django.template.loaders.cached.Loader', (
-            'django.template.loaders.filesystem.Loader',
-            'django.template.loaders.app_directories.Loader', )),
+        # 'django.template.loaders.cached.Loader',
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
     )
 
 
